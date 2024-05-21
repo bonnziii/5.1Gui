@@ -1,0 +1,55 @@
+import tkinter as tk
+import RPi.GPIO as GPIO
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+red_led = 17
+green_led = 27
+blue_led = 22
+
+GPIO.setup(red_led, GPIO.OUT)
+GPIO.setup(green_led, GPIO.OUT)
+GPIO.setup(blue_led, GPIO.OUT)
+
+# Function to turn off all LEDs
+def all_leds_off():
+    GPIO.output(red_led, GPIO.LOW)
+    GPIO.output(green_led, GPIO.LOW)
+    GPIO.output(blue_led, GPIO.LOW)
+
+# Function to handle LED selection
+def select_led():
+    all_leds_off()
+    selected_led = led_var.get()
+    if selected_led == 1:
+        GPIO.output(red_led, GPIO.HIGH)
+    elif selected_led == 2:
+        GPIO.output(green_led, GPIO.HIGH)
+    elif selected_led == 3:
+        GPIO.output(blue_led, GPIO.HIGH)
+
+# Create GUI window
+window = tk.Tk()
+window.title("LED Control")
+
+# LED selection variable
+led_var = tk.IntVar()
+
+# Create radio buttons for LED selection
+rb_red = tk.Radiobutton(window, text="Red LED", variable=led_var, value=1, command=select_led)
+rb_green = tk.Radiobutton(window, text="Green LED", variable=led_var, value=2, command=select_led)
+rb_blue = tk.Radiobutton(window, text="Blue LED", variable=led_var, value=3, command=select_led)
+
+rb_red.pack(anchor=tk.W)
+rb_green.pack(anchor=tk.W)
+rb_blue.pack(anchor=tk.W)
+
+# Create exit button
+exit_button = tk.Button(window, text="Exit", command=window.quit)
+exit_button.pack()
+
+# Run the GUI loop
+window.mainloop()
+
+# Cleanup GPIO on exit
+GPIO.cleanup()
